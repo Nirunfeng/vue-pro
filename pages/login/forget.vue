@@ -136,6 +136,6 @@
 
 <style>
 	@import url("../../components/watch-login/css/icon.css");
-	@import url("./css/main.css");
+	@import url("../../static/css/login/main.css");
 </style>
 
