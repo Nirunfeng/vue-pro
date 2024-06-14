@@ -6,13 +6,13 @@
 			<view class="main">
 				<view class="tips">若你忘记了密码，可在此重置新密码。</view>
 				<wInput
-					v-model="phoneData"
+					v-model="username"
 					type="text"
 					maxlength="11"
 					placeholder="请输入手机号码"
 				></wInput>
 				<wInput
-					v-model="passData"
+					v-model="password"
 					type="password"
 					maxlength="11"
 					placeholder="请输入新密码"
@@ -51,8 +51,8 @@
 	export default {
 		data() {
 			return {
-				phoneData: "", //电话
-				passData: "", //密码
+				username: "", //电话
+				password: "", //密码
 				verCode:"", //验证码
 				isRotate: false, //是否加载旋转
 			}
@@ -65,15 +65,39 @@
 			_this= this;
 		},
 		methods: {
+			//校验username
+			checkUsername(username) {
+				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+				if (this.username.length == "") {
+					return "手机号不能为空"
+				} else if (!reg.test(username)) {
+					return "请输入正确格式的手机号"
+				} else {
+					return null
+				}
+			},
+			//校验密码
+			checkPassword(password) {
+				const reg = /(?![A-Z]*$)(?![a-z]*$)(?![0-9]*$)(?![^a-zA-Z0-9]*$)/
+				if (password.length < 8 || password.length > 16) {
+					return "密码不能少于8位"
+				} else if (!reg.test(password)) {
+					return "密码必须由大写字母、小写字母、数字、特殊符号中的2种及以上类型组成"
+				} else {
+					return null
+				}
+			},
 			getVerCode(){
 				//获取验证码
-				if (_this.phoneData.length != 11) {
-				     uni.showToast({
-				        icon: 'none',
+				//校验手机号
+				let usernameCheckResult = this.checkUsername(this.username)
+				if (null != usernameCheckResult) {
+					uni.showToast({
+						icon: 'none',
 						position: 'bottom',
-				        title: '手机号不正确'
-				    });
-				    return false;
+						title: usernameCheckResult
+					});
+					return;
 				}
 				console.log("获取验证码")
 				this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
@@ -98,22 +122,26 @@
 					//判断是否加载中，避免重复点击请求
 					return false;
 				}
-				if (this.phoneData.length != 11) {
-				    uni.showToast({
-				        icon: 'none',
+				//校验手机号
+				let usernameCheckResult = this.checkUsername(this.username)
+				if (null != usernameCheckResult) {
+					uni.showToast({
+						icon: 'none',
 						position: 'bottom',
-				        title: '手机号不正确'
-				    });
-				    return false;
+						title: usernameCheckResult
+					});
+					return;
 				}
-			    if (this.passData.length < 6) {
-			        uni.showToast({
-			            icon: 'none',
+				//校验密码
+				let pwdCheckResult = this.checkPassword(this.password)
+				if (null != pwdCheckResult) {
+					uni.showToast({
+						icon: 'none',
 						position: 'bottom',
-			            title: '密码不正确'
-			        });
-			        return false;
-			    }
+						title: pwdCheckResult
+					});
+					return;
+				}
 				if (this.verCode.length != 4) {
 				    uni.showToast({
 				        icon: 'none',
