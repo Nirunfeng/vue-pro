@@ -6,19 +6,21 @@
         <image :src="logoImage"></image>
       </view>
       <!-- 主体表单 -->
-      <view class="main">
+      <view class="main" :rules="searchRule">
         <wInput
-            v-model="phoneData"
+            v-model="username"
             type="text"
             maxlength="11"
             placeholder="用户名/电话"
             :focus="isFocus"
+            prop="username"
         ></wInput>
         <wInput
-            v-model="passData"
+            v-model="password"
             type="password"
-            maxlength="11"
+            maxlength="16"
             placeholder="密码"
+            prop="password"
         ></wInput>
       </view>
       <wButton
@@ -29,17 +31,17 @@
       ></wButton>
 
       <!-- 其他登录 -->
-      <view class="other_login cuIcon">
-        <view class="login_icon">
-          <view class="cuIcon-weixin" @tap="login_weixin"></view>
-        </view>
-        <view class="login_icon">
-          <view class="cuIcon-weibo" @tap="login_weibo"></view>
-        </view>
-        <view class="login_icon">
-          <view class="cuIcon-github" @tap="login_github"></view>
-        </view>
-      </view>
+      <!--      <view class="other_login cuIcon">-->
+      <!--        <view class="login_icon">-->
+      <!--          <view class="cuIcon-weixin" @tap="login_weixin"></view>-->
+      <!--        </view>-->
+      <!--        <view class="login_icon">-->
+      <!--          <view class="cuIcon-weibo" @tap="login_weibo"></view>-->
+      <!--        </view>-->
+      <!--        <view class="login_icon">-->
+      <!--          <view class="cuIcon-github" @tap="login_github"></view>-->
+      <!--        </view>-->
+      <!--      </view>-->
 
       <!-- 底部信息 -->
       <view class="footer">
@@ -60,14 +62,50 @@ export default {
   data() {
     return {
       picPath: [
-        "../../static/image/avatar/头像1.jpg"
+        "../../static/image/avatar/头像1.png",
+        "../../static/image/avatar/头像2.png"
       ],
       //logo图片
       logoImage: '',
-      phoneData: '', //用户/电话
-      passData: '', //密码
+      username: '', //用户/电话
+      password: '', //密码
       isRotate: false, //是否加载旋转
-      isFocus: true // 是否聚焦
+      isFocus: true, // 是否聚焦
+      searchRule: {
+        //校验规则,手机号
+        username: [
+          {
+            required: true,
+            message: "请输入手机号码",
+            trigger: "blur"
+          },
+          {
+            validator: function(rule, value, callback) {
+              if (/^1[34578]\d{9}$/.test(value) == false) {
+                callback(new Error("手机号格式错误"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        //校验密码规则
+        password:[
+          { required: true, trigger: "blur", message: "请输入您的密码" },
+          {
+            min: 8,
+            max: 16,
+            message: "用户密码长度至少8位",
+            trigger: "blur",
+          },
+          {
+            pattern: /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]/,
+            message: "密码应包含数字、大小写字母、特殊符号中的3类",
+            trigger: "blur",
+          }
+        ]
+      }
     };
   },
   components: {
@@ -78,9 +116,7 @@ export default {
   created() {
     /*随机选取头像*/
     let index = Math.round(Math.random() * (this.picPath.length - 1))
-    console.log("随机数为:" + index)
     this.logoImage = this.picPath[index]
-    console.log(this.logoImage)
   },
   mounted() {
     _this = this;
