@@ -48,6 +48,7 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
+	import { resetPassword } from '../../request/api';
 	export default {
 		data() {
 			return {
@@ -67,7 +68,7 @@
 		methods: {
 			//校验username
 			checkUsername(username) {
-				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
 				if (this.username.length == "") {
 					return "手机号不能为空"
 				} else if (!reg.test(username)) {
@@ -122,6 +123,7 @@
 					//判断是否加载中，避免重复点击请求
 					return false;
 				}
+				
 				//校验手机号
 				let usernameCheckResult = this.checkUsername(this.username)
 				if (null != usernameCheckResult) {
@@ -132,6 +134,7 @@
 					});
 					return;
 				}
+				
 				//校验密码
 				let pwdCheckResult = this.checkPassword(this.password)
 				if (null != pwdCheckResult) {
@@ -142,21 +145,52 @@
 					});
 					return;
 				}
-				if (this.verCode.length != 4) {
-				    uni.showToast({
-				        icon: 'none',
-						position: 'bottom',
-				        title: '验证码不正确'
-				    });
-				    return false;
+				// if (this.verCode.length != 4) {
+				//     uni.showToast({
+				//         icon: 'none',
+				// 		position: 'bottom',
+				//         title: '验证码不正确'
+				//     });
+				//     return false;
+				// }
+				let resetParam={
+					"username":this.username,
+					"password":this.password
 				}
-				console.log("重置密码成功")
-				_this.isRotate=true
-				setTimeout(function(){
-					_this.isRotate=false
-				},3000)
-				
-				
+				resetPassword(resetParam).then((res)=>{
+					if(res.code==0){
+						console.log("重置成功")
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							duration: 2000,
+							title: '重置成功，即将跳转登录页面'
+						});
+						console.log("重置密码成功")
+						_this.isRotate=true
+						setTimeout(function(){
+							_this.isRotate=false
+							uni.navigateTo({
+								url: 'login'
+							});
+						},2000)
+					} else {
+						console.error('失败', res);
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res.msg
+						});
+						return;
+					}
+				}).catch((err)=>{
+					console.error('失败', err);
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: err.data
+					})
+				})
 			}
 		}
 	}

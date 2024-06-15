@@ -32,6 +32,9 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
+	import {
+		register
+	} from '../../request/api.js'
 
 	export default {
 		data() {
@@ -64,7 +67,7 @@
 		methods: {
 			//校验username
 			checkUsername(username) {
-				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
 				if (this.username.length == "") {
 					return "手机号不能为空"
 				} else if (!reg.test(username)) {
@@ -115,6 +118,8 @@
 					});
 				}, 3000)
 			},
+
+
 			startReg() {
 				//注册
 				if (this.isRotate) {
@@ -149,19 +154,47 @@
 					});
 					return;
 				}
-				// if (this.verCode.length != 4) {
-				// 	uni.showToast({
-				// 		icon: 'none',
-				// 		position: 'bottom',
-				// 		title: '验证码不正确'
-				// 	});
-				// 	return false;
-				// }
-				console.log("注册成功")
-				_this.isRotate = true
-				setTimeout(function() {
-					_this.isRotate = false
-				}, 3000)
+				//调用注册方法
+				let registerParam = {
+					"username": this.username,
+					"password": this.password
+				}
+				register(registerParam).then((res) => {
+					if (res.code == 0) {
+						//注册成功
+						console.log("注册成功")
+						/*注册成功跳转页面*/
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							duration: 2000,
+							title: '注册成功，即将跳转登录页面'
+						});
+						_this.isRotate = true
+						setTimeout(function() {
+							_this.isRotate = false
+							uni.navigateTo({
+								url: 'login'
+							});
+						}, 2000)
+						console.log(_this.isRotate)
+					} else {
+						console.error('失败', res);
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res.msg
+						});
+						return;
+					}
+				}).catch((err) => {
+					console.error('失败', err);
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: err.data
+					})
+				})
 			}
 		}
 	}

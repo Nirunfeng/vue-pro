@@ -7,8 +7,8 @@
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
-				<wInput v-model="username" type="text" maxlength="11" placeholder="电话" :focus="isFocus"
-					prop="username"></wInput>
+				<wInput v-model="username" type="text" maxlength="11" placeholder="电话" :focus="isFocus" prop="username">
+				</wInput>
 				<wInput v-model="password" type="password" maxlength="16" placeholder="密码" prop="password"></wInput>
 			</view>
 			<wButton class="wbutton" text="登 录" :rotate="isRotate" @click="startLogin"></wButton>
@@ -40,6 +40,10 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
+	//引入api
+	import {
+		login
+	} from '../../request/api.js'
 
 	export default {
 		data() {
@@ -88,24 +92,24 @@
 				// }
 			},
 			//校验username
-			checkUsername (username){
-				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+			checkUsername(username) {
+				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
 				if (this.username.length == "") {
 					return "手机号不能为空"
-				}else if(!reg.test(username)){
+				} else if (!reg.test(username)) {
 					return "请输入正确格式的手机号"
-				}else{
+				} else {
 					return null
 				}
 			},
 			//校验密码
 			checkPassword(password) {
 				const reg = /(?![A-Z]*$)(?![a-z]*$)(?![0-9]*$)(?![^a-zA-Z0-9]*$)/
-				if (password.length < 8 || password.length > 16){
+				if (password.length < 8 || password.length > 16) {
 					return "密码不能少于8位"
-				}else if(!reg.test(password)){
+				} else if (!reg.test(password)) {
 					return "密码必须由大写字母、小写字母、数字、特殊符号中的2种及以上类型组成"
-				}else{
+				} else {
 					return null
 				}
 			},
@@ -117,8 +121,8 @@
 					return false;
 				}
 				//校验手机号
-				let usernameCheckResult=this.checkUsername(this.username)
-				if (null!=usernameCheckResult) {
+				let usernameCheckResult = this.checkUsername(this.username)
+				if (null != usernameCheckResult) {
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -127,8 +131,8 @@
 					return;
 				}
 				//校验密码
-				let pwdCheckResult=this.checkPassword(this.password)
-				if (null!=pwdCheckResult) {
+				let pwdCheckResult = this.checkPassword(this.password)
+				if (null != pwdCheckResult) {
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
@@ -136,12 +140,40 @@
 					});
 					return;
 				}
-				console.log("登录成功")
-
-				_this.isRotate = true
-				setTimeout(function() {
-					_this.isRotate = false
-				}, 3000)
+				let loginParam = {
+					"username": this.username,
+					"password": this.password
+				}
+				/*调用登录方法*/
+				login(loginParam).then((res) => {
+					if(res.code==0){
+						console.log('成功', res);
+						console.log("登录成功")
+						
+						_this.isRotate = true
+						setTimeout(function() {
+							_this.isRotate = false
+						}, 3000)
+					}else{
+						console.error('失败', res);
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: res.msg
+						});
+						return;
+					}
+					
+				}).catch((err) => {
+					console.error('失败', err);
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: err.data
+					});
+					return;
+				});
+				
 				// uni.showLoading({
 				// 	title: '登录中'
 				// });
