@@ -158,7 +158,7 @@
 					"password":this.password
 				}
 				resetPassword(resetParam).then((res)=>{
-					if(res.code==0){
+					if(res.code=="0"){
 						console.log("重置成功")
 						uni.showToast({
 							icon: 'none',

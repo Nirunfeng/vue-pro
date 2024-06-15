@@ -2,8 +2,8 @@
 	<view class="login">
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="header">
-				<image :src="logoImage"></image>
+			<view class="loginHeader">
+				<!-- <image :src="logoImage"></image> -->
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
@@ -146,7 +146,7 @@
 				}
 				/*调用登录方法*/
 				login(loginParam).then((res) => {
-					if(res.code==0){
+					if(res.code=="0"){
 						console.log('成功', res);
 						console.log("登录成功")
 						

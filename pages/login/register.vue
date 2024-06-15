@@ -3,7 +3,7 @@
 
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="header">
+			<view class="header" @click="chooseAvatar">
 				<image :src="logoImage"></image>
 			</view>
 			<!-- 主体 -->
@@ -32,6 +32,7 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
+	import config from '../../request/config.js';
 	import {
 		register
 	} from '../../request/api.js'
@@ -60,11 +61,47 @@
 			/*随机选取头像*/
 			let index = Math.round(Math.random() * (this.picPath.length - 1))
 			this.logoImage = this.picPath[index]
+			//上传图片
+			uni.uploadFile({
+				url: config.baseURL + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
+				filePath: this.logoImage,
+				name: 'file',
+				success: (res) => {
+					const data = JSON.parse(res.data);
+					if(data.code=="0"){
+						this.logoImage=data.data
+					}
+				}
+			});
 		},
 		mounted() {
 			_this = this;
 		},
 		methods: {
+			//选择图片
+			chooseAvatar() {
+				uni.chooseImage({
+					count: 1, // 只允许选择一张图片
+					sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+					sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+					success: (res) => {
+						const tempFilePaths = res.tempFilePaths;
+						this.logoImage = tempFilePaths[0];
+						//上传图片
+						uni.uploadFile({
+							url: config.baseURL + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
+							filePath: this.logoImage,
+							name: 'file',
+							success: (res) => {
+								console.log(res.data);
+								if(res.code=="0"){
+									this.logoImage=res.data.data
+								}
+							}
+						});
+					}
+				});
+			},
 			//校验username
 			checkUsername(username) {
 				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
@@ -157,10 +194,11 @@
 				//调用注册方法
 				let registerParam = {
 					"username": this.username,
-					"password": this.password
+					"password": this.password,
+					"imgUrl": this.logoImage
 				}
 				register(registerParam).then((res) => {
-					if (res.code == 0) {
+					if (res.code == "0") {
 						//注册成功
 						console.log("注册成功")
 						/*注册成功跳转页面*/
