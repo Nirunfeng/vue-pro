@@ -26,3 +26,12 @@ export const resetPassword = (params) => {
 		data: params
 	})
 }
+
+//获取验证码
+export const verifyCode=(params)=>{
+	return request({
+		url:'/user/sendVerCodeMail.do',
+		method:'get',
+		data:params
+	})
+}

@@ -10,7 +10,8 @@
 			<view class="main">
 				<wInput v-model="username" type="text" maxlength="11" placeholder="手机号"></wInput>
 				<wInput v-model="password" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput>
-				<wInput v-model="verCode" type="number" maxlength="4" placeholder="验证码" isShowCode ref="runCode"
+				<wInput v-model="email" type="text" maxlength="20" placeholder="邮箱"></wInput>
+				<wInput v-model="verCode" type="number" maxlength="6" placeholder="验证码" isShowCode ref="runCode"
 					@setCode="getVerCode()"></wInput>
 
 			</view>
@@ -34,7 +35,8 @@
 	import wButton from '../../components/watch-login/watch-button.vue' //button
 	import config from '../../request/config.js';
 	import {
-		register
+		register,
+		verifyCode
 	} from '../../request/api.js'
 
 	export default {
@@ -48,6 +50,7 @@
 				logoImage: '',
 				username: '',
 				password: '',
+				email: '',
 				verCode: "", //验证码
 				showAgree: true, //协议是否选择
 				isRotate: false, //是否加载旋转
@@ -68,8 +71,8 @@
 				name: 'file',
 				success: (res) => {
 					const data = JSON.parse(res.data);
-					if(data.code=="0"){
-						this.logoImage=data.data
+					if (data.code == "0") {
+						this.logoImage = data.data
 					}
 				}
 			});
@@ -94,8 +97,8 @@
 							name: 'file',
 							success: (res) => {
 								console.log(res.data);
-								if(res.code=="0"){
-									this.logoImage=res.data.data
+								if (res.code == "0") {
+									this.logoImage = res.data.data
 								}
 							}
 						});
@@ -124,36 +127,48 @@
 					return null
 				}
 			},
+			//校验邮箱
+			checkEmail(email){
+				const reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+				if(!reg.test(email)){
+					return "邮箱格式不正确"
+				}
+				return null
+			},
 			isShowAgree() {
 				//是否选择协议
 				_this.showAgree = !_this.showAgree;
 			},
 			getVerCode() {
-				//获取验证码
-				if (_this.phoneData.length != 11) {
+				const emailCheckResult=this.checkEmail(this.email)
+				if(emailCheckResult!=null){
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
-						title: '手机号不正确'
+						title: emailCheckResult
 					});
-					return false;
+					return;
 				}
 				console.log("获取验证码")
-				this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
-				uni.showToast({
-					icon: 'none',
-					position: 'bottom',
-					title: '模拟倒计时触发'
-				});
-
-				setTimeout(function() {
-					_this.$refs.runCode.$emit('runCode', 0); //假装模拟下需要 终止倒计时
+				const params={
+					"email":this.email
+				}
+				verifyCode(params).then((res)=>{
+					if(res.code=="0"){
+						this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: '获取验证码成功'
+						});
+					}
+				}).catch((err)=>{
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
-						title: '模拟倒计时终止'
+						title: "网络异常，验证码获取失败"
 					});
-				}, 3000)
+				})
 			},
 
 
