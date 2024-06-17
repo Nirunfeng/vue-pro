@@ -1,3 +1,5 @@
+import {verifyCode} from "../../request/api";
+
 var userMethod={
 	//校验邮箱
 	checkEmail(email){
@@ -28,6 +30,37 @@ var userMethod={
 					} else {
 						return null
 					}
-				}
+				},
+	getVerCode(username) {
+		const emailCheckResult=this.checkEmail(this.username)
+		if(emailCheckResult!=null){
+			uni.showToast({
+				icon: 'none',
+				position: 'bottom',
+				title: emailCheckResult
+			});
+			return;
+		}
+		console.log("获取验证码")
+		const params={
+			"email":username
+		}
+		verifyCode(params).then((res)=>{
+			if(res.code=="0"){
+				this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: '获取验证码成功'
+				});
+			}
+		}).catch((err)=>{
+			uni.showToast({
+				icon: 'none',
+				position: 'bottom',
+				title: "网络异常，验证码获取失败"
+			});
+		})
+	}
 }
 export default userMethod
