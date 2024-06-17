@@ -65,9 +65,6 @@
 			wInput,
 			wButton,
 		},
-		onLoad:function(option){
-			this.username=option.username
-		},
 		//页面创建时生命周期函数
 		created() {
 			/*随机选取头像*/

@@ -8,7 +8,7 @@
 			</view>
 			<!-- 主体 -->
 			<view class="main">
-        <wInput v-model="username" type="text" maxlength="20" placeholder="邮箱"></wInput>
+				<wInput v-model="username" type="text" maxlength="20" placeholder="邮箱"></wInput>
 				<wInput v-model="password" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput>
 				<wInput v-model="verCode" type="number" maxlength="6" placeholder="验证码" isShowCode ref="runCode"
 					@setCode="getVerCode()"></wInput>
@@ -31,7 +31,7 @@
 <script>
 	import userMethod from "../../static/js/common.js";
 
-  let _this;
+	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
 	import config from '../../request/config.js';
@@ -140,36 +140,35 @@
 				_this.showAgree = !_this.showAgree;
 			},
 			getVerCode() {
-				// const emailCheckResult=this.checkEmail(this.username)
-				// if(emailCheckResult!=null){
-				// 	uni.showToast({
-				// 		icon: 'none',
-				// 		position: 'bottom',
-				// 		title: emailCheckResult
-				// 	});
-				// 	return;
-				// }
-				// console.log("获取验证码")
-				// const params={
-				// 	"email":this.username
-				// }
-				// verifyCode(params).then((res)=>{
-				// 	if(res.code=="0"){
-				// 		this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
-				// 		uni.showToast({
-				// 			icon: 'none',
-				// 			position: 'bottom',
-				// 			title: '获取验证码成功'
-				// 		});
-				// 	}
-				// }).catch((err)=>{
-				// 	uni.showToast({
-				// 		icon: 'none',
-				// 		position: 'bottom',
-				// 		title: "网络异常，验证码获取失败"
-				// 	});
-				// })
-        userMethod.getVerCode(this.username)
+				const emailCheckResult=userMethod.checkEmail(this.username)
+				if(emailCheckResult!=null){
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: emailCheckResult
+					});
+					return;
+				}
+				console.log("获取验证码")
+				const params={
+					"email":this.username
+				}
+				verifyCode(params).then((res)=>{
+					if(res.code=="0"){
+						this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
+						uni.showToast({
+							icon: 'none',
+							position: 'bottom',
+							title: '获取验证码成功'
+						});
+					}
+				}).catch((err)=>{
+					uni.showToast({
+						icon: 'none',
+						position: 'bottom',
+						title: "网络异常，验证码获取失败"
+					});
+				})
 			},
 
 
@@ -212,7 +211,7 @@
 					"username": this.username,
 					"password": this.password,
 					"imgUrl": this.logoImage,
-          "verifyCode":this.verCode
+					"verifyCode": this.verCode
 				}
 				register(registerParam).then((res) => {
 					if (res.code == "0") {
@@ -229,7 +228,7 @@
 						setTimeout(function() {
 							_this.isRotate = false
 							uni.navigateTo({
-								url: 'login?username='+this.username
+								url: 'login'
 							});
 						}, 2000)
 						console.log(_this.isRotate)
@@ -249,7 +248,7 @@
 						position: 'bottom',
 						title: err.data
 					});
-          return;
+					return;
 				})
 			}
 		}
