@@ -1,29 +1,42 @@
 <template>
-	<view class="container">
-		
-		<view class="intro">本项目已包含uni ui组件，无需import和注册，可直接使用。在代码区键入字母u，即可通过代码助手列出所有可用组件。光标置于组件名称处按F1，即可查看组件文档。</view>
-		<text class="intro">详见：</text>
-		<uni-link :href="href" :text="href"></uni-link>
+	<view>
+		<!--底部导航-->
+		<view class="footer" >
+			<helang-tab-bar-bubble :fixed-bottom="false"></helang-tab-bar-bubble>
+		</view>
 	</view>
 </template>
 
 <script>
+	//固定组件
+	import tabBarBubble from "@/uni_modules/helang-tabBar/components/helang-tabBar/tab-bar-bubble.vue";
+	
+	//工具函数
+	import _tool from '../../static/js/tools.js';
 	export default {
+		components: { 
+			"helang-tab-bar-bubble":tabBarBubble, 
+		},
 		data() {
 			return {
-				href: 'https://uniapp.dcloud.io/component/README?id=uniui'
+				
 			}
 		},
+		onLoad() {
+			
+		},
+		onReady() {
+		},
 		methods: {
-
 		}
 	}
 </script>
 
-<style>
-	.container {
-		padding: 20px;
-		font-size: 14px;
-		line-height: 24px;
+<style scoped>
+	.footer{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		border:red 1px solid;
 	}
 </style>
