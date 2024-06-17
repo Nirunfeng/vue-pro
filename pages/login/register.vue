@@ -8,9 +8,8 @@
 			</view>
 			<!-- 主体 -->
 			<view class="main">
-				<wInput v-model="username" type="text" maxlength="11" placeholder="手机号"></wInput>
+        <wInput v-model="username" type="text" maxlength="20" placeholder="邮箱"></wInput>
 				<wInput v-model="password" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput>
-				<wInput v-model="email" type="text" maxlength="20" placeholder="邮箱"></wInput>
 				<wInput v-model="verCode" type="number" maxlength="6" placeholder="验证码" isShowCode ref="runCode"
 					@setCode="getVerCode()"></wInput>
 
@@ -50,7 +49,6 @@
 				logoImage: '',
 				username: '',
 				password: '',
-				email: '',
 				verCode: "", //验证码
 				showAgree: true, //协议是否选择
 				isRotate: false, //是否加载旋转
@@ -140,7 +138,7 @@
 				_this.showAgree = !_this.showAgree;
 			},
 			getVerCode() {
-				const emailCheckResult=this.checkEmail(this.email)
+				const emailCheckResult=this.checkEmail(this.username)
 				if(emailCheckResult!=null){
 					uni.showToast({
 						icon: 'none',
@@ -151,7 +149,7 @@
 				}
 				console.log("获取验证码")
 				const params={
-					"email":this.email
+					"email":this.username
 				}
 				verifyCode(params).then((res)=>{
 					if(res.code=="0"){
@@ -187,7 +185,7 @@
 					return false;
 				}
 				//校验手机号
-				let usernameCheckResult = this.checkUsername(this.username)
+				let usernameCheckResult = this.checkEmail(this.username)
 				if (null != usernameCheckResult) {
 					uni.showToast({
 						icon: 'none',
@@ -210,7 +208,8 @@
 				let registerParam = {
 					"username": this.username,
 					"password": this.password,
-					"imgUrl": this.logoImage
+					"imgUrl": this.logoImage,
+          "verifyCode":this.verCode
 				}
 				register(registerParam).then((res) => {
 					if (res.code == "0") {
@@ -227,7 +226,7 @@
 						setTimeout(function() {
 							_this.isRotate = false
 							uni.navigateTo({
-								url: 'login'
+								url: 'login?username='+this.username
 							});
 						}, 2000)
 						console.log(_this.isRotate)
@@ -246,7 +245,8 @@
 						icon: 'none',
 						position: 'bottom',
 						title: err.data
-					})
+					});
+          return;
 				})
 			}
 		}

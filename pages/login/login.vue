@@ -7,7 +7,7 @@
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
-				<wInput v-model="username" type="text" maxlength="11" placeholder="电话" :focus="isFocus" prop="username">
+				<wInput v-model="username" type="text" maxlength="20" placeholder="邮箱" :focus="isFocus" prop="username">
 				</wInput>
 				<wInput v-model="password" type="password" maxlength="16" placeholder="密码" prop="password"></wInput>
 			</view>
@@ -54,7 +54,7 @@
 				],
 				//logo图片
 				logoImage: '',
-				username: '', //用户/电话
+				username: '', //邮箱
 				password: '', //密码
 				isRotate: false, //是否加载旋转
 				isFocus: true // 是否聚焦
@@ -63,6 +63,9 @@
 		components: {
 			wInput,
 			wButton,
+		},
+		onLoad:function(option){
+			this.username=option.username
 		},
 		//页面创建时生命周期函数
 		created() {
@@ -91,6 +94,14 @@
 				// 	// error
 				// }
 			},
+      //校验邮箱
+      checkEmail(email){
+        const reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if(!reg.test(email)){
+          return "邮箱格式不正确"
+        }
+        return null
+      },
 			//校验username
 			checkUsername(username) {
 				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
@@ -121,7 +132,7 @@
 					return false;
 				}
 				//校验手机号
-				let usernameCheckResult = this.checkUsername(this.username)
+				let usernameCheckResult = this.checkEmail(this.username)
 				if (null != usernameCheckResult) {
 					uni.showToast({
 						icon: 'none',
@@ -147,9 +158,6 @@
 				/*调用登录方法*/
 				login(loginParam).then((res) => {
 					if(res.code=="0"){
-						console.log('成功', res);
-						console.log("登录成功")
-						
 						_this.isRotate = true
 						setTimeout(function() {
 							_this.isRotate = false
@@ -163,56 +171,16 @@
 						});
 						return;
 					}
-					
 				}).catch((err) => {
 					console.error('失败', err);
 					uni.showToast({
 						icon: 'none',
 						position: 'bottom',
-						title: err.data
+						title: "网络异常，请重试"
 					});
 					return;
 				});
-				
-				// uni.showLoading({
-				// 	title: '登录中'
-				// });
-				// getLogin()
-				// .then(res => {
-				// 	//console.log(res)
-				// 	//简单验证下登录（不安全）
-				// 	if(_this.phoneData==res.data.username && _this.passData==res.data.password){
-				// 		let userdata={
-				// 			"username":res.data.username,
-				// 			"nickname":res.data.nickname,
-				// 			"accesstoken":res.data.accesstoken,
-				// 		} //保存用户信息和accesstoken
-				// 		_this.$store.dispatch("setUserData",userdata); //存入状态
-				// 		try {
-				// 			uni.setStorageSync('setUserData', userdata); //存入缓存
-				// 		} catch (e) {
-				// 			// error
-				// 		}
-				// 		uni.showToast({
-				// 			icon: 'success',
-				// 			position: 'bottom',
-				// 			title: '登录成功'
-				// 		});
-				// 		uni.reLaunch({
-				// 			url: '../../../pages/index',
-				// 		});
-				// 	}else{
-				// 		_this.passData=""
-				// 		uni.showToast({
-				// 			icon: 'error',
-				// 			position: 'bottom',
-				// 			title: '账号或密码错误，账号admin密码admin'
-				// 		});
-				// 	}
-				// 	uni.hideLoading();
-				// }).catch(err => {
-				// 	uni.hideLoading();
-				// })
+        //TODO:需要跳转到首页
 
 			},
 			login_weixin() {

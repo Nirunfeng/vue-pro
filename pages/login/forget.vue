@@ -8,8 +8,8 @@
 				<wInput
 					v-model="username"
 					type="text"
-					maxlength="11"
-					placeholder="请输入手机号码"
+					maxlength="20"
+					placeholder="请输入邮箱"
 				></wInput>
 				<wInput
 					v-model="password"
@@ -48,7 +48,7 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
-	import { resetPassword } from '../../request/api';
+  import {resetPassword, verifyCode} from '../../request/api';
 	export default {
 		data() {
 			return {
@@ -66,6 +66,14 @@
 			_this= this;
 		},
 		methods: {
+      //校验邮箱
+      checkEmail(email){
+        const reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if(!reg.test(email)){
+          return "邮箱格式不正确"
+        }
+        return null
+      },
 			//校验username
 			checkUsername(username) {
 				const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
@@ -88,35 +96,37 @@
 					return null
 				}
 			},
-			getVerCode(){
-				//获取验证码
-				//校验手机号
-				let usernameCheckResult = this.checkUsername(this.username)
-				if (null != usernameCheckResult) {
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: usernameCheckResult
-					});
-					return;
-				}
-				console.log("获取验证码")
-				this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
-				uni.showToast({
-				    icon: 'none',
-					position: 'bottom',
-				    title: '模拟倒计时触发'
-				});
-				
-				setTimeout(function(){
-					_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
-					uni.showToast({
-					    icon: 'none',
-						position: 'bottom',
-					    title: '模拟倒计时终止'
-					});
-				},3000)
-			},
+      getVerCode() {
+        const emailCheckResult=this.checkEmail(this.username)
+        if(emailCheckResult!=null){
+          uni.showToast({
+            icon: 'none',
+            position: 'bottom',
+            title: emailCheckResult
+          });
+          return;
+        }
+        console.log("获取验证码")
+        const params={
+          "email":this.username
+        }
+        verifyCode(params).then((res)=>{
+          if(res.code=="0"){
+            this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
+            uni.showToast({
+              icon: 'none',
+              position: 'bottom',
+              title: '获取验证码成功'
+            });
+          }
+        }).catch((err)=>{
+          uni.showToast({
+            icon: 'none',
+            position: 'bottom',
+            title: "网络异常，验证码获取失败"
+          });
+        })
+      },
 			startRePass() {
 				//重置密码
 				if(this.isRotate){
@@ -124,8 +134,8 @@
 					return false;
 				}
 				
-				//校验手机号
-				let usernameCheckResult = this.checkUsername(this.username)
+				//校验邮箱
+				let usernameCheckResult = this.checkEmail(this.username)
 				if (null != usernameCheckResult) {
 					uni.showToast({
 						icon: 'none',
@@ -145,17 +155,10 @@
 					});
 					return;
 				}
-				// if (this.verCode.length != 4) {
-				//     uni.showToast({
-				//         icon: 'none',
-				// 		position: 'bottom',
-				//         title: '验证码不正确'
-				//     });
-				//     return false;
-				// }
 				let resetParam={
 					"username":this.username,
-					"password":this.password
+					"password":this.password,
+          "verCode":this.verCode
 				}
 				resetPassword(resetParam).then((res)=>{
 					if(res.code=="0"){
@@ -171,7 +174,7 @@
 						setTimeout(function(){
 							_this.isRotate=false
 							uni.navigateTo({
-								url: 'login'
+								url: 'login?username='+this.username
 							});
 						},2000)
 					} else {
