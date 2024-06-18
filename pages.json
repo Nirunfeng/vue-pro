@@ -1,6 +1,10 @@
 {
 	"pages": [
 		{
+			"path": "pages/index/index",
+			"style": {}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {}
 		}, {
@@ -9,13 +13,8 @@
 		}, {
 			"path": "pages/login/register",
 			"style": {}
-		},
-		{
-		"path": "pages/index/index",
-		"style": {
-			"navigationBarTitleText": "uni-app"
 		}
-	}],
+		],
 	"tabBar" : {
 	    "color" : "#7a7e83",
 	    "selectedColor" : "#FFD305",
@@ -23,34 +22,34 @@
 	    "borderStyle" : "block",
 	    "list" : [
 	        {
-	            "pagePath" : "pages/pages/index/index",
+	            "pagePath" : "pages/index/index",
 	            "text" : "首页",
 	            "iconPath" : "static/image/tab/home.png",
 	            "selectedIconPath" : "static/image/tab/home-select.png"
 	        },
 	        {
-	            "pagePath" : "pages/pages/index/index",
+	            "pagePath" : "pages/index/index",
 	            "text" : "发现",
-	            "iconPath" : "static/tab_icon_4.png",
-	            "selectedIconPath" : "static/tab_icon_3.png"
+	            "iconPath" : "static/image/tab/find.png",
+	            "selectedIconPath" : "static/image/tab/find-select.png"
 	        },
 	        {
-	            "pagePath" : "pages/pages/index/index",
+	            "pagePath" : "pages/index/index",
 	            "text" : "发布",
-	            "iconPath" : "static/tab_icon_5_5.png",
-	            "selectedIconPath" : "static/tab_icon_5_5.png"
+	            "iconPath" : "static/image/tab/push.png",
+	            "selectedIconPath" : "static/image/tab/push.png"
 	        },
 	        {
-	            "pagePath" : "pages/pages/index/index",
+	            "pagePath" : "pages/index/index",
 	            "text" : "消息",
-	            "iconPath" : "static/tab_icon_7.png",
-	            "selectedIconPath" : "static/tab_icon_6.png"
+	            "iconPath" : "static/image/tab/message.png",
+	            "selectedIconPath" : "static/image/tab/message-select.png"
 	        },
 	        {
-	            "pagePath" : "pages/pages/index/index",
+	            "pagePath" : "pages/login/login",
 	            "text" : "我的",
-	            "iconPath" : "static/tab_icon_9.png",
-	            "selectedIconPath" : "static/tab_icon_8.png"
+	            "iconPath" : "static/image/tab/mine.png",
+	            "selectedIconPath" : "static/image/tab/mine-select.png"
 	        }
 	    ]
 	},
