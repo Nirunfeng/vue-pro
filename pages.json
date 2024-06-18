@@ -16,6 +16,44 @@
 			"navigationBarTitleText": "uni-app"
 		}
 	}],
+	"tabBar" : {
+	    "color" : "#7a7e83",
+	    "selectedColor" : "#FFD305",
+	    "backgroundColor" : "#ffffff",
+	    "borderStyle" : "block",
+	    "list" : [
+	        {
+	            "pagePath" : "pages/pages/index/index",
+	            "text" : "首页",
+	            "iconPath" : "static/image/tab/home.png",
+	            "selectedIconPath" : "static/image/tab/home-select.png"
+	        },
+	        {
+	            "pagePath" : "pages/pages/index/index",
+	            "text" : "发现",
+	            "iconPath" : "static/tab_icon_4.png",
+	            "selectedIconPath" : "static/tab_icon_3.png"
+	        },
+	        {
+	            "pagePath" : "pages/pages/index/index",
+	            "text" : "发布",
+	            "iconPath" : "static/tab_icon_5_5.png",
+	            "selectedIconPath" : "static/tab_icon_5_5.png"
+	        },
+	        {
+	            "pagePath" : "pages/pages/index/index",
+	            "text" : "消息",
+	            "iconPath" : "static/tab_icon_7.png",
+	            "selectedIconPath" : "static/tab_icon_6.png"
+	        },
+	        {
+	            "pagePath" : "pages/pages/index/index",
+	            "text" : "我的",
+	            "iconPath" : "static/tab_icon_9.png",
+	            "selectedIconPath" : "static/tab_icon_8.png"
+	        }
+	    ]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "登录",
