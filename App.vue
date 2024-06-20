@@ -45,8 +45,9 @@ export default {
     console.log('App 关闭')
   }
 }
-</script>
-
+</script lang="scss">
+	/*每个页面公共css */
+	@import "/static/css/iconfont/font.css";
 <style >
 
 body{

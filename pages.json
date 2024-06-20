@@ -5,6 +5,14 @@
 			"style": {}
 		},
 		{
+			"path": "pages/msg/msg",
+			"style": {}
+		},
+		{
+			"path": "pages/msg/chat/chat",
+			"style": {}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {}
 		}, {
@@ -29,18 +37,12 @@
 	        },
 	        {
 	            "pagePath" : "pages/index/index",
-	            "text" : "发现",
-	            "iconPath" : "static/image/tab/find.png",
-	            "selectedIconPath" : "static/image/tab/find-select.png"
-	        },
-	        {
-	            "pagePath" : "pages/index/index",
 	            "text" : "发布",
 	            "iconPath" : "static/image/tab/push.png",
 	            "selectedIconPath" : "static/image/tab/push.png"
 	        },
 	        {
-	            "pagePath" : "pages/index/index",
+	            "pagePath" : "pages/msg/msg",
 	            "text" : "消息",
 	            "iconPath" : "static/image/tab/message.png",
 	            "selectedIconPath" : "static/image/tab/message-select.png"
