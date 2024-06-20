@@ -5,6 +5,14 @@
 			"style": {}
 		},
 		{
+			"path": "pages/msg/msg",
+			"style": {}
+		},
+		{
+			"path": "pages/msg/chat/chat",
+			"style": {}
+		},
+		{
 			"path": "pages/login/login",
 			"style": {}
 		}, {
@@ -14,7 +22,39 @@
 			"path": "pages/login/register",
 			"style": {}
 		}
-	],
+		],
+	"tabBar" : {
+	    "color" : "#7a7e83",
+	    "selectedColor" : "#FFD305",
+	    "backgroundColor" : "#ffffff",
+	    "borderStyle" : "block",
+	    "list" : [
+	        {
+	            "pagePath" : "pages/index/index",
+	            "text" : "首页",
+	            "iconPath" : "static/image/tab/home.png",
+	            "selectedIconPath" : "static/image/tab/home-select.png"
+	        },
+	        {
+	            "pagePath" : "pages/index/index",
+	            "text" : "发布",
+	            "iconPath" : "static/image/tab/push.png",
+	            "selectedIconPath" : "static/image/tab/push.png"
+	        },
+	        {
+	            "pagePath" : "pages/msg/msg",
+	            "text" : "消息",
+	            "iconPath" : "static/image/tab/message.png",
+	            "selectedIconPath" : "static/image/tab/message-select.png"
+	        },
+	        {
+	            "pagePath" : "pages/login/login",
+	            "text" : "我的",
+	            "iconPath" : "static/image/tab/mine.png",
+	            "selectedIconPath" : "static/image/tab/mine-select.png"
+	        }
+	    ]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "登录",
