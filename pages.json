@@ -5,6 +5,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/publish/publish",
+			"style": {}
+		},
+		{
 			"path": "pages/msg/msg",
 			"style": {}
 		},
@@ -36,7 +40,7 @@
 	            "selectedIconPath" : "static/image/tab/home-select.png"
 	        },
 	        {
-	            "pagePath" : "pages/index/index",
+	            "pagePath" : "pages/publish/publish",
 	            "text" : "发布",
 	            "iconPath" : "static/image/tab/push.png",
 	            "selectedIconPath" : "static/image/tab/push.png"
