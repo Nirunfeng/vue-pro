@@ -5,6 +5,10 @@
 			"style": {}
 		},
 		{
+			"path": "pages/index/school/school",
+			"style": {}
+		},
+		{
 			"path": "pages/publish/publish",
 			"style": {}
 		},
