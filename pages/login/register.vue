@@ -34,7 +34,7 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
-	import config from '../../request/config.js';
+	import baseUrls from '../../request/baseUrls.js';
 	import {
 		register,
 		verifyCode
@@ -66,7 +66,7 @@
 			this.logoImage = this.picPath[index]
 			//上传图片
 			uni.uploadFile({
-				url: config.baseURL + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
+				url: baseUrls.base1 + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
 				filePath: this.logoImage,
 				name: 'file',
 				success: (res) => {

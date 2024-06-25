@@ -148,8 +148,9 @@
 					let items = value.data.map(item => {
 						let obj = {}
 						obj['key'] = value.letter
-						obj['name'] = item
+						obj['name'] = item.name
 						obj['itemIndex'] = index
+						obj['code']=item.code
 						index++
 						obj.checked = item.checked ? item.checked : false
 						return obj
@@ -286,7 +287,7 @@
 	.uni-indexed-list {
 		position: absolute;
 		left: 0;
-		top: 0;
+		top: 110rpx!important;
 		right: 0;
 		bottom: 0;
 		/* #ifndef APP-NVUE */

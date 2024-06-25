@@ -55,13 +55,5 @@
 			"urlCheck": false
 		},
 		"usingComponents": true
-	},
-	"env": {
-		"development": {
-			"NODE_ENV": "development"
-		},
-		"production": {
-			"NODE_ENV": "production"
-		}
 	}
 }
