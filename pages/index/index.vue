@@ -224,6 +224,18 @@
 			}
 		},
 		onLoad() {
+			//获取缓存中的学校数据
+			console.log("进入首页")
+			if(uni.getStorageSync('school')){
+			console.log(uni.getStorageSync('school'))
+			const school=JSON.parse(uni.getStorageSync('school'))
+			if(school){
+				this.currentSchool.code=school.item.code
+				this.currentSchool.name=school.item.name
+			}
+			uni.removeStorageSync('school')
+			}
+			
 
 			// #ifdef APP-PLUS
 			this.nVueTitle = uni.getSubNVueById('homeTitleNvue');
