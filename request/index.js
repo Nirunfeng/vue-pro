@@ -1,4 +1,4 @@
-import config from './config.js';
+import baseUrls from './baseUrls.js'
 
 // 请求超出时间
 const timeout = 5000
@@ -6,7 +6,13 @@ const timeout = 5000
 //封装通用post/get请求
 const request = (options) => {
 	return new Promise((resolve, reject) => {
-		let url = config.baseURL + options.url;
+		let baseUri=baseUrls.base1
+		if(options.module==='user'){
+			
+		}else if(options.module==='dictionary'){
+			baseUri=baseUrls.base2
+		}
+		let url = baseUri + options.url;
 		if (options.method === 'GET' && options.params) {
 			const queryString = Object.keys(options.params)
 				.map(key => encodeURIComponent(key) + '=' + encodeURIComponent(options.params[key]))
@@ -14,7 +20,7 @@ const request = (options) => {
 			url += '?' + queryString;
 		}
 		uni.request({
-			url: config.baseURL + options.url, // 拼接基础URL和具体接口路径
+			url: url, // 拼接基础URL和具体接口路径
 			method: options.method || 'GET', // 默认GET请求
 			data: options.method !== 'GET' ? (options.data || {}) : {},
 			header: options.header || {
