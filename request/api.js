@@ -43,7 +43,16 @@ export const verifyCode=(params)=>{
 //加载学校字典
 export const schoolList=(params)=>{
 	return request({
-		url:'/dictionary/pageSchool.do',
+		url:'/dictionary/querySchoolDictionary.do',
+		method:'get',
+		data:params,
+		module:'dictionary'
+	})
+}
+//根据名称查询学校
+export const searchSchool=(params)=>{
+	return request({
+		url:'/dictionary/querySchoolDictByName.do',
 		method:'get',
 		data:params,
 		module:'dictionary'

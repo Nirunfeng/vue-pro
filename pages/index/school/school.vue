@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import { schoolList } from '../../../request/api';
+	import { schoolList,searchSchool} from '../../../request/api';
 	export default {
 	data() {
 		return {
@@ -52,7 +52,7 @@
 				"name":this.searchValue
 			}
 			//调用接口赋值list
-			schoolList(params).then((res)=>{
+      searchSchool(params).then((res)=>{
 				//调用成功的返回
 				if(res.code=='0'){
 					this.list=res.data
