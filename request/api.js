@@ -58,3 +58,12 @@ export const searchSchool=(params)=>{
 		module:'dictionary'
 	})
 }
+
+//查询app菜单
+export const appMenu=()=>{
+	return request({
+		url:'/client/menu/queryMenus.do',
+		method:'get',
+		module:'dictionary'
+	})
+}

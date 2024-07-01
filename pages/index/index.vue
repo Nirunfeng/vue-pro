@@ -21,10 +21,10 @@
 		<!-- 分类列表 -->
 		<view class="category-list">
 			<view class="category" v-for="(row, index) in categoryList" :key="index" @tap="toCategory(row)">
-				<view class="img">
-					<image :src="row.img"></image>
+				<view class="img" @click="linkMenu">
+					<image :src="row.imgUrl"></image>
 				</view>
-				<view class="text">{{ row.name }}</view>
+				<view class="text">{{ row.menuName }}</view>
 			</view>
 		</view>
 		<!-- 占位 -->
@@ -55,6 +55,7 @@
 	var ttt = 0;
 	//高德SDK
 	import amap from '@/static/js/SDK/amap-wx.js';
+	import { appMenu } from '../../request/api';
 	export default {
 		data() {
 			return {
@@ -74,42 +75,42 @@
 						id: 1,
 						name: '办公',
 						img: '/static/img/category/1.png'
-					},
-					{
-						id: 2,
-						name: '家电',
-						img: '/static/img/category/2.png'
-					},
-					{
-						id: 3,
-						name: '服饰',
-						img: '/static/img/category/3.png'
-					},
-					{
-						id: 4,
-						name: '日用',
-						img: '/static/img/category/4.png'
-					},
-					{
-						id: 5,
-						name: '蔬果',
-						img: '/static/img/category/5.png'
-					},
-					{
-						id: 6,
-						name: '运动',
-						img: '/static/img/category/6.png'
-					},
-					{
-						id: 7,
-						name: '书籍',
-						img: '/static/img/category/7.png'
-					},
-					{
-						id: 8,
-						name: '文具',
-						img: '/static/img/category/8.png'
 					}
+					// {
+					// 	id: 2,
+					// 	name: '家电',
+					// 	img: '/static/img/category/2.png'
+					// },
+					// {
+					// 	id: 3,
+					// 	name: '服饰',
+					// 	img: '/static/img/category/3.png'
+					// },
+					// {
+					// 	id: 4,
+					// 	name: '日用',
+					// 	img: '/static/img/category/4.png'
+					// },
+					// {
+					// 	id: 5,
+					// 	name: '蔬果',
+					// 	img: '/static/img/category/5.png'
+					// },
+					// {
+					// 	id: 6,
+					// 	name: '运动',
+					// 	img: '/static/img/category/6.png'
+					// },
+					// {
+					// 	id: 7,
+					// 	name: '书籍',
+					// 	img: '/static/img/category/7.png'
+					// },
+					// {
+					// 	id: 8,
+					// 	name: '文具',
+					// 	img: '/static/img/category/8.png'
+					// }
 				],
 				Promotion: [],
 				//猜你喜欢列表
@@ -235,7 +236,21 @@
 			}
 			uni.removeStorageSync('school')
 			}
-			
+			//调用接口，获取菜单
+			appMenu().then((res)=>{
+				//调用成功的返回
+				if(res.code=='0'){
+					this.categoryList=res.data
+				}
+			}).catch((err)=>{
+				console.error('失败', err);
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: "网络异常，请重试"
+				});
+				return;
+			})
 
 			// #ifdef APP-PLUS
 			this.nVueTitle = uni.getSubNVueById('homeTitleNvue');
@@ -270,6 +285,15 @@
 			this.loadPromotion();
 		},
 		methods: {
+			//跳转菜单方法
+			linkMenu(){
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: "跳转菜单"
+				});
+				return;
+			},
 			//选择学校方法
 			selectSchool() {
 				uni.navigateTo({
