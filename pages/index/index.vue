@@ -55,7 +55,7 @@
 	var ttt = 0;
 	//高德SDK
 	import amap from '@/static/js/SDK/amap-wx.js';
-	import { appMenu } from '../../request/api';
+	import { appMenu,queryUser,searchSchoolCode } from '../../request/api';
 	export default {
 		data() {
 			return {
@@ -71,47 +71,7 @@
 				},
 				currentSwiper: 0,
 				// 分类菜单
-				categoryList: [{
-						id: 1,
-						name: '办公',
-						img: '/static/img/category/1.png'
-					}
-					// {
-					// 	id: 2,
-					// 	name: '家电',
-					// 	img: '/static/img/category/2.png'
-					// },
-					// {
-					// 	id: 3,
-					// 	name: '服饰',
-					// 	img: '/static/img/category/3.png'
-					// },
-					// {
-					// 	id: 4,
-					// 	name: '日用',
-					// 	img: '/static/img/category/4.png'
-					// },
-					// {
-					// 	id: 5,
-					// 	name: '蔬果',
-					// 	img: '/static/img/category/5.png'
-					// },
-					// {
-					// 	id: 6,
-					// 	name: '运动',
-					// 	img: '/static/img/category/6.png'
-					// },
-					// {
-					// 	id: 7,
-					// 	name: '书籍',
-					// 	img: '/static/img/category/7.png'
-					// },
-					// {
-					// 	id: 8,
-					// 	name: '文具',
-					// 	img: '/static/img/category/8.png'
-					// }
-				],
+				categoryList: [],
 				Promotion: [],
 				//猜你喜欢列表
 				productList: [{
@@ -225,17 +185,57 @@
 			}
 		},
 		onLoad() {
+			//获取全局的用户信息
+			const userName=uni.getStorageSync("username")
+			/* 根据用户名查询用户信息获取关联的学校信息 */
+			if(userName){
+				const userData={
+					"username":userName
+				}
+				const params={
+					"pageNo":1,
+					"pageSize":1,
+					"data":data
+				}
+				//调用接口查询user信息
+				queryUser(params).then((res)=>{
+					//调用成功的返回
+					if(res.code=='0'){
+						const userInfoList=res.data.getList
+						const userInfo=userInfoList[0]
+						//查询学校
+						if(userInfo){
+							//存缓存
+							const school={
+								"code":userInfo.school,
+								"name":userInfo.schoolName
+							}
+							uni.setStorageSync("school",JSON.stringify(school))
+						}
+					}
+				}).catch((err)=>{
+				console.error('失败', err);
+				uni.showToast({
+					icon: 'none',
+					position: 'bottom',
+					title: "网络异常，请重试"
+				});
+				return;
+			})
+			}
 			//获取缓存中的学校数据
 			console.log("进入首页")
 			if(uni.getStorageSync('school')){
-			console.log(uni.getStorageSync('school'))
-			const school=JSON.parse(uni.getStorageSync('school'))
-			if(school){
-				this.currentSchool.code=school.item.code
-				this.currentSchool.name=school.item.name
+				console.log(uni.getStorageSync('school'))
+				const school=JSON.parse(uni.getStorageSync('school'))
+				if(school){
+					this.currentSchool.code=school.item.code
+					this.currentSchool.name=school.item.name
+				}
+				uni.removeStorageSync('school')
 			}
-			uni.removeStorageSync('school')
-			}
+			
+			
 			//调用接口，获取菜单
 			appMenu().then((res)=>{
 				//调用成功的返回

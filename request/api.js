@@ -30,6 +30,16 @@ export const resetPassword = (params) => {
 	})
 }
 
+//分页查询用户信息
+export const queryUser=(params)=>{
+	return request({
+		url:'/user/query.do',
+		method:'post',
+		data:params,
+		module:'user'
+	})
+}
+
 //获取验证码
 export const verifyCode=(params)=>{
 	return request({

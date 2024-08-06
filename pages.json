@@ -17,6 +17,10 @@
 			"style": {}
 		},
 		{
+			"path" : "pages/center/home",
+			"style" : {}
+		},
+		{
 			"path": "pages/msg/chat/chat",
 			"style": {}
 		},
@@ -30,7 +34,7 @@
 			"path": "pages/login/register",
 			"style": {}
 		}
-		],
+	],
 	"tabBar" : {
 	    "color" : "#7a7e83",
 	    "selectedColor" : "#FFD305",
@@ -56,7 +60,7 @@
 	            "selectedIconPath" : "static/image/tab/message-select.png"
 	        },
 	        {
-	            "pagePath" : "pages/login/login",
+	            "pagePath" : "pages/center/home",
 	            "text" : "我的",
 	            "iconPath" : "static/image/tab/mine.png",
 	            "selectedIconPath" : "static/image/tab/mine-select.png"
