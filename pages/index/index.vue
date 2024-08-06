@@ -31,11 +31,11 @@
 		<view v-if="showHeader" class="place"></view>
 		<!-- 商品列表 -->
 		<view class="goods-list">
-			<view class="title">
+			<!-- <view class="title">
 				<image src="/static/img/hua.png"></image>
 				猜你喜欢
 				<image src="/static/img/hua.png"></image>
-			</view>
+			</view> -->
 			<view class="product-list">
 				<view class="product" v-for="product in productList" :key="product.goods_id" @tap="toGoods(product)">
 					<image mode="widthFix" :src="product.img"></image>
