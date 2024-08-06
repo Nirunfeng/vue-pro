@@ -12,7 +12,7 @@
 			</view>
 			<!-- 搜索框 -->
 			<view class="input-box">
-				<input placeholder="默认关键字" placeholder-style="color:#c0c0c0;" @tap="toSearch()" />
+				<input placeholder="输入课程设计名称" placeholder-style="color:#c0c0c0;" @tap="toSearch()" />
 				<view class="icon search"></view>
 			</view>
 		</view>
@@ -516,7 +516,6 @@
 			position: relative;
 			display: flex;
 			align-items: center;
-			border: red 1rpx solid;
 
 			.icon {
 				display: flex;
