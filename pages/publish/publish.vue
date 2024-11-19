@@ -12,7 +12,7 @@
 			<textarea v-model="content" placeholder="请输入内容" class="content" />
 			<view class="images">
 				<view class="item" v-for="(item, index) in 8" :key="index">
-					<image src="../../static/image/avatar/头像2.png" class="image"></image>
+					<image src="../../static/image/avatar/avatar2.png" class="image"></image>
 					<uni-icons type="trash" size="18" color="red" class="delete"></uni-icons>
 				</view>
 				<view class="item upload-btn flex-row">

@@ -2,30 +2,45 @@
 	<view class="login">
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="loginHeader">
+			<view class="header">
 				<!-- <image :src="logoImage"></image> -->
 			</view>
 			<!-- 主体表单 -->
 			<view class="main">
-				<wInput v-model="username" type="text" maxlength="20" placeholder="邮箱" :focus="isFocus" prop="username">
-				</wInput>
-				<wInput v-model="password" type="password" maxlength="16" placeholder="密码" prop="password"></wInput>
+				<wInput
+					v-model="phoneData"
+					type="text"
+					maxlength="11"
+					placeholder="用户名/电话"
+					:focus="isFocus"
+				></wInput>
+				<wInput
+					v-model="passData"
+					type="password"
+					maxlength="11"
+					placeholder="密码"
+				></wInput>
 			</view>
-			<wButton class="wbutton" text="登 录" :rotate="isRotate" @click="startLogin"></wButton>
-
+			<wButton 
+				class="wbutton"
+				text="登 录"
+				:rotate="isRotate" 
+				@click="startLogin"
+			></wButton>
+			
 			<!-- 其他登录 -->
-			<!--      <view class="other_login cuIcon">-->
-			<!--        <view class="login_icon">-->
-			<!--          <view class="cuIcon-weixin" @tap="login_weixin"></view>-->
-			<!--        </view>-->
-			<!--        <view class="login_icon">-->
-			<!--          <view class="cuIcon-weibo" @tap="login_weibo"></view>-->
-			<!--        </view>-->
-			<!--        <view class="login_icon">-->
-			<!--          <view class="cuIcon-github" @tap="login_github"></view>-->
-			<!--        </view>-->
-			<!--      </view>-->
-
+			<view class="other_login cuIcon">
+				<view class="login_icon">
+					<view class="cuIcon-weixin" @tap="login_weixin"></view>
+				</view>
+				<view class="login_icon">
+					<view class="cuIcon-weibo" @tap="login_weibo"></view>
+				</view>
+				<view class="login_icon">
+					<view class="cuIcon-github" @tap="login_github"></view>
+				</view>
+			</view>
+			
 			<!-- 底部信息 -->
 			<view class="footer">
 				<navigator url="forget" open-type="navigate">找回密码</navigator>
@@ -40,43 +55,27 @@
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
-	//引入api
-	import {
-		login
-	} from '../../request/api.js'
-	import userMethod from '../../static/js/common.js';
-
+	
 	export default {
 		data() {
 			return {
-				picPath: [
-					"../../static/image/avatar/头像1.png",
-					"../../static/image/avatar/头像2.png"
-				],
-				//logo图片
-				logoImage: '',
-				username: '', //邮箱
-				password: '', //密码
+				//logo图片 base64
+				logoImage:'../../static/image/avatar/avatar1.png',
+				passData:'', //密码
 				isRotate: false, //是否加载旋转
 				isFocus: true // 是否聚焦
 			};
 		},
-		components: {
+		components:{
 			wInput,
 			wButton,
 		},
-		//页面创建时生命周期函数
-		created() {
-			/*随机选取头像*/
-			let index = Math.round(Math.random() * (this.picPath.length - 1))
-			this.logoImage = this.picPath[index]
-		},
 		mounted() {
-			_this = this;
+			_this= this;
 			//this.isLogin();
 		},
 		methods: {
-			isLogin() {
+			isLogin(){
 				//判断缓存中是否登录过，直接登录
 				// try {
 				// 	const value = uni.getStorageSync('setUserData');
@@ -92,65 +91,77 @@
 				// 	// error
 				// }
 			},
-			startLogin(e) {
-				console.log(e)
+		    startLogin(e){
+                console.log(e)
 				//登录
-				if (this.isRotate) {
+				if(this.isRotate){
 					//判断是否加载中，避免重复点击请求
 					return false;
 				}
-				//校验手机号
-				let usernameCheckResult = userMethod.checkEmail(this.username)
-				if (null != usernameCheckResult) {
-					uni.showToast({
-						icon: 'none',
+				if (this.phoneData.length == "") {
+				     uni.showToast({
+				        icon: 'none',
 						position: 'bottom',
-						title: usernameCheckResult
-					});
-					return;
+				        title: '用户名不能为空'
+				    });
+				    return;
 				}
-				//校验密码
-				let pwdCheckResult = userMethod.checkPassword(this.username)
-				if (null != pwdCheckResult) {
-					uni.showToast({
-						icon: 'none',
+		        if (this.passData.length < 5) {
+		            uni.showToast({
+		                icon: 'none',
 						position: 'bottom',
-						title: pwdCheckResult
-					});
-					return;
-				}
-				let loginParam = {
-					"username": this.username,
-					"password": this.password
-				}
-				/*调用登录方法*/
-				login(loginParam).then((res) => {
-					if(res.code=="0"){
-						_this.isRotate = true
-						setTimeout(function() {
-							_this.isRotate = false
-						}, 3000)
-					}else{
-						console.error('失败', res);
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: res.msg
-						});
-						return;
-					}
-				}).catch((err) => {
-					console.error('失败', err);
-					uni.showToast({
-						icon: 'none',
-						position: 'bottom',
-						title: "网络异常，请重试"
-					});
-					return;
-				});
-        //TODO:需要跳转到首页
-
-			},
+		                title: '密码不正确'
+		            });
+		            return;
+		        }
+				
+				console.log("登录成功")
+				
+				_this.isRotate=true
+				setTimeout(function(){
+					_this.isRotate=false
+				},3000)
+				// uni.showLoading({
+				// 	title: '登录中'
+				// });
+				// getLogin()
+				// .then(res => {
+				// 	//console.log(res)
+				// 	//简单验证下登录（不安全）
+				// 	if(_this.phoneData==res.data.username && _this.passData==res.data.password){
+				// 		let userdata={
+				// 			"username":res.data.username,
+				// 			"nickname":res.data.nickname,
+				// 			"accesstoken":res.data.accesstoken,
+				// 		} //保存用户信息和accesstoken
+				// 		_this.$store.dispatch("setUserData",userdata); //存入状态
+				// 		try {
+				// 			uni.setStorageSync('setUserData', userdata); //存入缓存
+				// 		} catch (e) {
+				// 			// error
+				// 		}
+				// 		uni.showToast({
+				// 			icon: 'success',
+				// 			position: 'bottom',
+				// 			title: '登录成功'
+				// 		});
+				// 		uni.reLaunch({
+				// 			url: '../../../pages/index',
+				// 		});
+				// 	}else{
+				// 		_this.passData=""
+				// 		uni.showToast({
+				// 			icon: 'error',
+				// 			position: 'bottom',
+				// 			title: '账号或密码错误，账号admin密码admin'
+				// 		});
+				// 	}
+				// 	uni.hideLoading();
+				// }).catch(err => {
+				// 	uni.hideLoading();
+				// })
+				
+		    },
 			login_weixin() {
 				//微信登录
 				uni.showToast({

@@ -1,26 +1,53 @@
 <template>
 	<view class="register">
-
+	
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="header" @click="chooseAvatar">
+			<view class="header">
 				<image :src="logoImage"></image>
 			</view>
 			<!-- 主体 -->
 			<view class="main">
-				<wInput v-model="username" type="text" maxlength="20" placeholder="邮箱"></wInput>
-				<wInput v-model="password" type="password" maxlength="11" placeholder="登录密码" isShowPass></wInput>
-				<wInput v-model="verCode" type="number" maxlength="6" placeholder="验证码" isShowCode ref="runCode"
-					@setCode="getVerCode()"></wInput>
-
+				<wInput
+					v-model="phoneData"
+					type="text"
+					maxlength="11"
+					placeholder="手机号"
+				></wInput>
+				<wInput
+					v-model="passData"
+					type="password"
+					maxlength="11"
+					placeholder="登录密码"
+					isShowPass
+				></wInput>
+				<wInput
+					v-model="verCode"
+					type="number"
+					maxlength="4"
+					placeholder="验证码"
+					
+					isShowCode
+					ref="runCode"
+					@setCode="getVerCode()"
+				></wInput>
+					
 			</view>
-
-			<wButton class="wbutton" text="注 册" :rotate="isRotate" @click.native="startReg()"></wButton>
-
+				
+			<wButton 
+				class="wbutton"
+				text="注 册"
+				:rotate="isRotate" 
+				@click.native="startReg()"
+			></wButton>
+			
 			<!-- 底部信息 -->
 			<view class="footer">
-				<text @tap="isShowAgree" class="cuIcon" :class="showAgree?'cuIcon-radiobox':'cuIcon-round'"> 同意
-				</text>
+				<text 
+					@tap="isShowAgree" 
+					class="cuIcon"
+					:class="showAgree?'cuIcon-radiobox':'cuIcon-round'"
+				> 同意</text>
 				<!-- 协议地址 -->
 				<navigator url="" open-type="navigate">《协议》</navigator>
 			</view>
@@ -29,228 +56,105 @@
 </template>
 
 <script>
-	import userMethod from "../../static/js/common.js";
-
 	let _this;
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
-	import baseUrls from '../../request/baseUrls.js';
-	import {
-		register,
-		verifyCode
-	} from '../../request/api.js'
-
+	
 	export default {
 		data() {
 			return {
-				picPath: [
-					"../../static/image/avatar/头像1.png",
-					"../../static/image/avatar/头像2.png"
-				],
-				//logo图片
-				logoImage: '',
-				username: '',
-				password: '',
-				verCode: "", //验证码
-				showAgree: true, //协议是否选择
+				//logo图片 base64
+				logoImage:'../../static/image/avatar/avatar1.png',
+				phoneData:'', // 用户/电话
+				passData:'', //密码
+				verCode:"", //验证码
+				showAgree:true, //协议是否选择
 				isRotate: false, //是否加载旋转
 			}
 		},
-		components: {
+		components:{
 			wInput,
 			wButton,
 		},
-		created() {
-			/*随机选取头像*/
-			let index = Math.round(Math.random() * (this.picPath.length - 1))
-			this.logoImage = this.picPath[index]
-			//上传图片
-			uni.uploadFile({
-				url: baseUrls.base1 + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
-				filePath: this.logoImage,
-				name: 'file',
-				success: (res) => {
-					const data = JSON.parse(res.data);
-					if (data.code == "0") {
-						this.logoImage = data.data
-					}
-				}
-			});
-		},
 		mounted() {
-			_this = this;
+			_this= this;
 		},
 		methods: {
-			//选择图片
-			chooseAvatar() {
-				uni.chooseImage({
-					count: 1, // 只允许选择一张图片
-					sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-					success: (res) => {
-						const tempFilePaths = res.tempFilePaths;
-						this.logoImage = tempFilePaths[0];
-						//上传图片
-						uni.uploadFile({
-							url: config.baseURL + '/user/avatarUpload.do', //仅为示例，非真实的接口地址
-							filePath: this.logoImage,
-							name: 'file',
-							success: (res) => {
-								console.log(res.data);
-								if (res.code == "0") {
-									this.logoImage = res.data.data
-								}
-							}
-						});
-					}
-				});
-			},
-			// //校验username
-			// checkUsername(username) {
-			// 	const reg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
-			// 	if (this.username.length == "") {
-			// 		return "手机号不能为空"
-			// 	} else if (!reg.test(username)) {
-			// 		return "请输入正确格式的手机号"
-			// 	} else {
-			// 		return null
-			// 	}
-			// },
-			// //校验密码
-			// checkPassword(password) {
-			// 	const reg = /(?![A-Z]*$)(?![a-z]*$)(?![0-9]*$)(?![^a-zA-Z0-9]*$)/
-			// 	if (password.length < 8 || password.length > 16) {
-			// 		return "密码不能少于8位"
-			// 	} else if (!reg.test(password)) {
-			// 		return "密码必须由大写字母、小写字母、数字、特殊符号中的2种及以上类型组成"
-			// 	} else {
-			// 		return null
-			// 	}
-			// },
-			// //校验邮箱
-			// checkEmail(email){
-			// 	const reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-			// 	if(!reg.test(email)){
-			// 		return "邮箱格式不正确"
-			// 	}
-			// 	return null
-			// },
-			isShowAgree() {
+			isShowAgree(){
 				//是否选择协议
 				_this.showAgree = !_this.showAgree;
 			},
-			getVerCode() {
-				const emailCheckResult=userMethod.checkEmail(this.username)
-				if(emailCheckResult!=null){
-					uni.showToast({
-						icon: 'none',
+			getVerCode(){
+				//获取验证码
+				if (_this.phoneData.length != 11) {
+				     uni.showToast({
+				        icon: 'none',
 						position: 'bottom',
-						title: emailCheckResult
-					});
-					return;
+				        title: '手机号不正确'
+				    });
+				    return false;
 				}
 				console.log("获取验证码")
-				const params={
-					"email":this.username
-				}
-				verifyCode(params).then((res)=>{
-					if(res.code=="0"){
-						this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: '获取验证码成功'
-						});
-					}
-				}).catch((err)=>{
+				this.$refs.runCode.$emit('runCode'); //触发倒计时（一般用于请求成功验证码后调用）
+				uni.showToast({
+				    icon: 'none',
+					position: 'bottom',
+				    title: '模拟倒计时触发'
+				});
+				
+				setTimeout(function(){
+					_this.$refs.runCode.$emit('runCode',0); //假装模拟下需要 终止倒计时
 					uni.showToast({
-						icon: 'none',
+					    icon: 'none',
 						position: 'bottom',
-						title: "网络异常，验证码获取失败"
+					    title: '模拟倒计时终止'
 					});
-				})
+				},3000)
 			},
-
-
-			startReg() {
+		    startReg() {
 				//注册
-				if (this.isRotate) {
+				if(this.isRotate){
 					//判断是否加载中，避免重复点击请求
 					return false;
 				}
 				if (this.showAgree == false) {
-					uni.showToast({
-						icon: 'none',
+				    uni.showToast({
+				        icon: 'none',
 						position: 'bottom',
-						title: '请先同意《协议》'
-					});
-					return false;
+				        title: '请先同意《协议》'
+				    });
+				    return false;
 				}
-				//校验手机号
-				let usernameCheckResult = userMethod.checkEmail(this.username)
-				if (null != usernameCheckResult) {
-					uni.showToast({
-						icon: 'none',
+				if (this.phoneData.length !=11) {
+				    uni.showToast({
+				        icon: 'none',
 						position: 'bottom',
-						title: usernameCheckResult
-					});
-					return;
+				        title: '手机号不正确'
+				    });
+				    return false;
 				}
-				//校验密码
-				let pwdCheckResult = userMethod.checkPassword(this.password)
-				if (null != pwdCheckResult) {
-					uni.showToast({
-						icon: 'none',
+		        if (this.passData.length < 6) {
+		            uni.showToast({
+		                icon: 'none',
 						position: 'bottom',
-						title: pwdCheckResult
-					});
-					return;
-				}
-				//调用注册方法
-				let registerParam = {
-					"username": this.username,
-					"password": this.password,
-					"imgUrl": this.logoImage,
-					"verifyCode": this.verCode
-				}
-				register(registerParam).then((res) => {
-					if (res.code == "0") {
-						//注册成功
-						console.log("注册成功")
-						/*注册成功跳转页面*/
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							duration: 2000,
-							title: '注册成功，即将跳转登录页面'
-						});
-						_this.isRotate = true
-						setTimeout(function() {
-							_this.isRotate = false
-							uni.navigateTo({
-								url: 'login'
-							});
-						}, 2000)
-						console.log(_this.isRotate)
-					} else {
-						console.error('失败', res);
-						uni.showToast({
-							icon: 'none',
-							position: 'bottom',
-							title: res.msg
-						});
-						return;
-					}
-				}).catch((err) => {
-					console.error('失败', err);
-					uni.showToast({
-						icon: 'none',
+		                title: '密码不正确'
+		            });
+		            return false;
+		        }
+				if (this.verCode.length != 4) {
+				    uni.showToast({
+				        icon: 'none',
 						position: 'bottom',
-						title: err.data
-					});
-					return;
-				})
-			}
+				        title: '验证码不正确'
+				    });
+				    return false;
+				}
+				console.log("注册成功")
+				_this.isRotate=true
+				setTimeout(function(){
+					_this.isRotate=false
+				},3000)
+		    }
 		}
 	}
 </script>
